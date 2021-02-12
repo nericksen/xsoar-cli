@@ -7,6 +7,10 @@ These automation scripts and integrations, combined with the XSOAR CLI make util
 
 #### Prerequisites
 Install python 3.7 or 3.8. 
+Clone this repo with `git clone https://github.com/nericksen/xsoar-cli.git`.
+Change directory into the CLI repo `cd xsoar-cli`.
+Clone the content repo into the same directory `git clone https://github.com/demisto/content.git`.
+
 Recomended to use `pyenv` or another Python versioning tool.
 
 Install `virtualenv` or someother Python virtual environment tool.
@@ -17,6 +21,10 @@ For example
 
 Create a virtual env with `virtualenv venv`.
 Activate the virtualenv with `source ./venv/bin/activate`
+
+Clone the Demisto content repo into the same directory as the XSOAR CLI.
+
+
 
 #### Requirements
 Install Python3 requirements with `pip install -r requirements.txt`
@@ -190,6 +198,8 @@ Currently only Python modules are supported.
 if __name__ in ("__builtin__", "builtins", "__main__"):
     main()
 ```
+
+Currently the `enable` command will work to add `__main__` if it does not exist in the pack code.
 
 
 #### Next in line for support

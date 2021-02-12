@@ -1,12 +1,8 @@
 # XSOAR Command Line Interface
 #### The XSOAR Universal CLI
-As the open source community has grown it has become evident that there are significant benefits to open sourcing your code.
-If one requires functionality and it can be modularized, sharing it is a great way to improve its quality and functionality.
-We security folks love to tinker, keep enhancing and sharpening our toolset and we decided to open up everything and make it a collaborative process for the entire security community. We want to create useful knowledge and build flexible, customizable tools, sharing them with each other as we go along.
-This XSOAR repository attempts to unlock the power of the demisto content code and provide everyone with the ability to utilize it, modify it, improve it, etc.
-This repo is forked from the [demisto content](https://github.com/demisto/content) where enterprise grade automation content is being built and maintained.
-In its current state the demisto (now known as XSOAR) content can only be used by acquiring an XSOAR enterprise or community edition license.
-These automation scripts and integrations make utilizing a vast array of 3rd party and open source APIs from a single CLI possible.
+The XSOAR CLI is designed to be a universal cyber security multi tool.
+This repo leverages the Demisto content repo [demisto content](https://github.com/demisto/content) where enterprise grade automation content is being built and maintained.
+These automation scripts and integrations, combined with the XSOAR CLI make utilizing a vast array of 3rd party and open source APIs from a single CLI possible.
 
 
 #### Prerequisites

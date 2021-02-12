@@ -128,7 +128,7 @@ class XSOARShell(Cmd):
                 f.write(json.dumps(CONFIG))
         
         if not config_key in CONFIG:
-            path = f"Packs/{pack}/Integrations/"
+            path = f"content/Packs/{pack}/Integrations/"
             
             # SAFE_MODE if True assumes standard file naming conventions
             if SAFE_MODE:
@@ -144,9 +144,9 @@ class XSOARShell(Cmd):
                 integration_code_path = integration_path + '/' + integration_code
                 integration_config_path = integration_path + '/' + integration_config
             else:
-                integration_path = f"{path}{pack}/"
-                integration_code_path = f"{path}{pack}/{pack}.py"
-                integration_config_path = f"{path}{pack}/{pack}.yml"
+                integration_path = f"conent/{path}{pack}/"
+                integration_code_path = f"content/{path}{pack}/{pack}.py"
+                integration_config_path = f"content/{path}{pack}/{pack}.yml"
             try:
                 with open(integration_config_path, "r") as stream:
                     yml = yaml.safe_load(stream)
@@ -195,7 +195,7 @@ class XSOARShell(Cmd):
                 f.write(mock_param_code)
 
             # Copy CommonServerPython into integration directory
-            shutil.copy('Packs/Base/Scripts/CommonServerPython/CommonServerPython.py', f"{integration_path}/")
+            shutil.copy('content/Packs/Base/Scripts/CommonServerPython/CommonServerPython.py', f"{integration_path}/")
             # Create blank CommonServerUserPython file in integration directory
             open(f"{integration_path}/CommonServerUserPython.py", "a").close()
 
@@ -229,6 +229,7 @@ class XSOARShell(Cmd):
         try:
             with open('config.json', 'r') as f:
                 CONFIG = json.loads(f.read())
+                print(CONFIG)
             CONFIG[pack]
         except:
             print("Command not configured yet. Try running 'enable' command first")
@@ -269,6 +270,7 @@ class XSOARShell(Cmd):
             f.write(mock_results_code)
         client = docker.from_env()
         volume_path = os.getcwd() + '/' + CONFIG[pack]['path']
+        print(volume_path)
         volumes = {
             volume_path: {"bind": "/tmp", "mode": "ro"}
         }
@@ -278,7 +280,9 @@ class XSOARShell(Cmd):
             container = None
         if not container:
             container = client.containers.run(docker_image, tty=True, detach=True, name=CONFIG[pack]['image_name'], auto_remove=True, volumes=volumes)
+        print(container)
         execute = subprocess.check_output(['docker', 'exec', CONFIG[pack]['image_name'], "/usr/local/bin/python", f"/tmp/{CONFIG[pack]['code'].split('/')[-1]}"], universal_newlines=True)
+        print(execute)
         print(execute.replace("'", '"').replace("u\"", '"').replace("\",", "\n").replace("{", "\n").replace("}", "").replace("\\n", "\n").replace("[", "\n").replace("]", "\n").replace(", \"", "\n").replace("\"","").replace("\',","\n"))
 
 if __name__ == '__main__':

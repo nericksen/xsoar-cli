@@ -182,6 +182,16 @@ Arguments:
 [] ElasticSearch
 ```
 
+#### Integration Notes
+It is important to note that the Pack in question must contain the check for `__main__` as `__name__` in order for the python code to actually execute.
+Currently only Python modules are supported. 
+
+```
+if __name__ in ("__builtin__", "builtins", "__main__"):
+    main()
+```
+
+
 #### Next in line for support
 * AWS Packs
 * GCP Packs

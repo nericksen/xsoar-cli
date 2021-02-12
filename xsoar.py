@@ -144,9 +144,9 @@ class XSOARShell(Cmd):
                 integration_code_path = integration_path + '/' + integration_code
                 integration_config_path = integration_path + '/' + integration_config
             else:
-                integration_path = f"conent/{path}{pack}/"
-                integration_code_path = f"content/{path}{pack}/{pack}.py"
-                integration_config_path = f"content/{path}{pack}/{pack}.yml"
+                integration_path = f"{path}{pack}/"
+                integration_code_path = f"{path}{pack}/{pack}.py"
+                integration_config_path = f"{path}{pack}/{pack}.yml"
             try:
                 with open(integration_config_path, "r") as stream:
                     yml = yaml.safe_load(stream)
@@ -187,7 +187,20 @@ class XSOARShell(Cmd):
             }
 
             CONFIG[config_key] = config
+            #################################
+            # Sanitze the call to the main function in order to trigger execution ###
+            #################################
+            lines = []
+            with open(integration_code_path) as infile:
+                for line in infile:
+                    if "__name__" in line and "__main__" not in line:
+                        line = "if __name__ in ('__builtin__', 'builtins', '__main__'):\n"
+                    lines.append(line)
+            with open(integration_code_path, "w") as outfile:
+                for line in lines:
+                    outfile.write(line)
 
+            ################################
             with open("config.json", "w") as f:
                 f.write(json.dumps(CONFIG))
 

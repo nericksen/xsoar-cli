@@ -247,89 +247,10 @@ class XSOARShell(Cmd):
             data.append(tmp)
         print("\n\n")
         print(data)
-        """
+        instance_name = "ipinfo_instance_1"
         body = {
-            "brand": "CVE Search V2",
-            "category": "Vulnerability Management",
-            "configuration": config,
-            "data": data,
-            "enabled": True,
-            "engine": "",
-            "engineGroup": "",
+            "name": instance_name, 
             "id": "",
-            "incomingMapperId": "",
-            "isIntegrationScript": True,
-            "isLongRunning": False,
-            "mappingId": "",
-            "name": "CVE Search v2_instance_1",
-            "outgoingMapperId": "",
-            "passwordProtected": False,
-        }
-        """
-        """
-        body = {
-            "brand": "CVE Search v2",
-            "configuration": config,
-            "data": data,
-            "category": "Vulnerability Management",
-            "name": "CVE Search v2_instance_1",
-            "version": 0,
-            "enabled": "true",
-            "id": "119a340f-a35c-45c5-8d77-24b5e40ddb17"
-
-        }
-        """
-        #with open("sample.json", "r") as f:
-            #script = json.loads(f.read())
-        script = {
-            "isRemoteSyncOut": False,
-            "longRunning": False,
-            "commands": config["script"]["commands"],
-            "longRunningPortMapping": False,
-            "isFetchCredentials": False,
-            "runOnce": False,
-            "isRemoteSyncIn": False,
-            "isFetch": False,
-            "isMappable": False,
-            "isFetchSamples": False,
-            "subtype": "",
-            "type": "javascript",
-            "feed": False
-        }
-        c = {
-            "sortValues": None,
-            "display": "ipinfo",
-            "canGetSamples": True,
-            "itemVersion": "1.0.1",
-            "brand": "",
-            "modified": "2021-01-22T14:15:02.185218921Z",
-            "shouldCommit": False,
-            "hidden": False,
-            "fromServerVersion": "",
-            "propagationLabels": [],
-            "name": "ipinfo",
-            "vcShouldKeepItemLegacyProdMachine": False,
-            "system": True,
-            "commitMessage": "",
-            "vcShouldIgnore": False,
-            "packPropagationLabels": ["all"],
-            "packID": "ipinfo",
-            "instances": [],
-            "configuration": yml["configuration"],
-            "version": 1,
-            "icon": "",
-            "toServerVersion": "",
-            "id": "ipinfo",
-            "image": "",
-            "description": "Use the ipinfo.io API to get data about an IP address",
-            "category": "Data Enrichment & Threat Intelligence",
-            "prevName": "ipinfo",
-            "integrationScript": script
-        }
-
-        body = {
-            "name": "ipinfo_instance_1",
-            "id": "82fdfb4c-bef4-4d99-82b5-2e5cbdfffed0",
             "engine": "",
             "engineGroup": "",
             "defaultIgnore": False,
@@ -351,138 +272,19 @@ class XSOARShell(Cmd):
                 "vcShouldIgnore": False,
                 "packPropagationLabels": ["all"],
                 "packID": "ipinfo",
-                "configuration": [{
-                    "defaultValue": "False",
-                    "display": "Use system proxy settings",
-                    "hidden": False,
-                    "info": "",
-                    "name": "proxy",
-                    "options": None,
-                    "required": False,
-                    "type": 8,
-                    "value": "False",
-                    "hasvalue": True
-                }, {
-                    "defaultValue": "",
-                    "display": "API Token (optional)",
-                    "hidden": False,
-                    "info": "",
-                    "name": "token",
-                    "options": None,
-                    "required": False,
-                    "type": 4
-                }, {
-                    "defaultValue": "",
-                    "display": "Trust any certificate (not secure)",
-                    "hidden": False,
-                    "info": "",
-                    "name": "insecure",
-                    "options": None,
-                    "required": False,
-                    "type": 8
-                }, {
-                    "defaultValue": "",
-                    "display": "Use HTTPS connections",
-                    "hidden": False,
-                    "info": "",
-                    "name": "use_https",
-                    "options": None,
-                    "required": False,
-                    "type": 8
-                }],
+                "configuration": data,
                 "version": 1,
                 "icon": "",
                 "toServerVersion": "",
-                "id": "ipinfo",
+                "id": yml["commonfields"]["id"],
                 "image": "",
-                "description": "Use the ipinfo.io API to get data about an IP address",
-                "category": "Data Enrichment & Threat Intelligence",
+                "description": yml["description"],
+                "category": yml["category"],
                 "prevName": "ipinfo",
                 "integrationScript": {
                     "isRemoteSyncOut": False,
                     "longRunning": False,
-                    "commands": [{
-                        "timeout": 0,
-                        "important": None,
-                        "indicatorAction": False,
-                        "cartesian": False,
-                        "hidden": False,
-                        "name": "ip",
-                        "outputs": [{
-                            "contentPath": "",
-                            "contextPath": "IP.Address",
-                            "description": "The IP address",
-                            "type": ""
-                        }, {
-                            "contentPath": "",
-                            "contextPath": "IP.Hostname",
-                            "description": "The IP hostname",
-                            "type": ""
-                        }, {
-                            "contentPath": "",
-                            "contextPath": "IP.ASN",
-                            "description": "The IP ASN",
-                            "type": ""
-                        }, {
-                            "contentPath": "",
-                            "contextPath": "IP.Geo.Location",
-                            "description": "The IP geographic location in coordinates",
-                            "type": ""
-                        }, {
-                            "contentPath": "",
-                            "contextPath": "IP.Geo.Country",
-                            "description": "The IP country",
-                            "type": ""
-                        }, {
-                            "contentPath": "",
-                            "contextPath": "IP.Geo.Description",
-                            "description": "The IP location as <City, Region, Postal Code, Country>",
-                            "type": ""
-                        }],
-                        "deprecated": False,
-                        "arguments": [{
-                            "default": True,
-                            "deprecated": False,
-                            "description": "IP address to query. E.g. \u0021ip 1.1.1.1",
-                            "name": "ip",
-                            "required": True,
-                            "secret": False
-                        }],
-                        "sensitive": False,
-                        "permitted": False,
-                        "execution": False,
-                        "description": "Check IP reputation (when information is available, returns a JSON with details).  Uses all configured Threat Intelligence feeds"
-                    }, {
-                        "timeout": 0,
-                        "important": None,
-                        "indicatorAction": False,
-                        "cartesian": False,
-                        "hidden": False,
-                        "name": "ipinfo_field",
-                        "outputs": None,
-                        "deprecated": False,
-                        "arguments": [{
-                            "default": True,
-                            "deprecated": False,
-                            "description": "IP address to query. E.g. \u0021ip 1.1.1.1",
-                            "name": "ip",
-                            "required": True,
-                            "secret": False
-                        }, {
-                            "auto": "PREDEFINED",
-                            "default": False,
-                            "deprecated": False,
-                            "description": "Name of the field to retrieve. Can be org, city, geo, etc.",
-                            "name": "field",
-                            "predefined": ["geo", "loc", "city", "region", "country", "org", "hostname", "phone"],
-                            "required": True,
-                            "secret": False
-                        }],
-                        "sensitive": False,
-                        "permitted": False,
-                        "execution": False,
-                        "description": "Retrieve value for a specific field from the IP address information"
-                    }],
+                    "commands": yml["script"]["commands"],
                     "longRunningPortMapping": False,
                     "isFetchCredentials": False,
                     "runOnce": False,
@@ -491,45 +293,18 @@ class XSOARShell(Cmd):
                     "isMappable": False,
                     "isFetchSamples": False,
                     "subtype": "",
-                    "type": "javascript",
+                    "type": yml["script"]["type"],
                     "feed": False
                 },
                 "instances": []
             },
             "enabled": "true",
             "propagationLabels": ["all"],
-            "data": [{
-                "name": "proxy",
-                "value": "False",
-                "hasvalue": True,
-                "type": 8,
-                "defaultValue": "",
-                "required": False,
-                "options": None
-            }, {
-                "name": "token",
-                "type": 4,
-                "defaultValue": "",
-                "required": False,
-                "options": None
-            }, {
-                "name": "insecure",
-                "type": 8,
-                "defaultValue": "",
-                "value": "true",
-                "required": False,
-                "options": None
-            }, {
-                "name": "use_https",
-                "type": 8,
-                "defaultValue": "",
-                "required": False,
-                "options": None
-            }],
-            "brand": "ipinfo",
+            "data": data,
+            "brand": yml["commonfields"]["id"],
             "canSample": True,
-            "category": "Data Enrichment & Threat Intelligence",
-            "version": 12,
+            "category": yml["category"],
+            "version": 1,
             "isIntegrationScript": True,
             "isLongRunning": False,
             "passwordProtected": False,
@@ -538,7 +313,7 @@ class XSOARShell(Cmd):
             "outgoingMapperId": ""
         }
 
-
+        #use "true" when prompted to trust any cert
 
 
 

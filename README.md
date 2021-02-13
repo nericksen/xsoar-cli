@@ -201,6 +201,7 @@ if __name__ in ("__builtin__", "builtins", "__main__"):
 
 Currently the `enable` command will work to add `__main__` if it does not exist in the pack code.
 
+You can set `insecure: True` when prompted to not validate the SSL cert with http requests.
 
 #### Next in line for support
 * AWS Packs

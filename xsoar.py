@@ -53,11 +53,12 @@ class XSOARShell(Cmd):
         try:
             with open('config.json', 'r') as f:
                 CONFIG = json.loads(f.read())
+            integration_config_path = CONFIG[pack]['config']
         except Exception as e:
+            print("Ensure pack is enabled in order to read the docs")
             print(e)
             return
         
-        integration_config_path = CONFIG[pack]['config']
 
         try:
             with open(integration_config_path, "r") as stream:
@@ -214,6 +215,128 @@ class XSOARShell(Cmd):
 
         else:
             print("Already configured")
+
+    def do_commit(self, args):
+        with open('config.json', 'r') as f:
+            CONFIG = json.loads(f.read())
+        #pack_config = CONFIG['ipinfo']
+        pack_config = "content/Packs/ipinfo/Integrations/integration-Ipinfo.yml"
+        print(pack_config)
+         
+        with open(pack_config, "r") as stream:
+            try:
+                yml = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+        print("\n\n")
+        brand = yml["name"]
+        config = yml
+        config["integrationScript"] = yml["script"]
+        del config["script"]
+        #config["id"] = "CVE Search v2"
+        data = []
+        for item in yml["configuration"]:
+            item["value"] = input(f"value for {item}: ")
+            data.append(item)
+        print(data)
+        print("\n\n")
+        """
+        body = {
+            "brand": "CVE Search V2",
+            "category": "Vulnerability Management",
+            "configuration": config,
+            "data": data,
+            "enabled": True,
+            "engine": "",
+            "engineGroup": "",
+            "id": "",
+            "incomingMapperId": "",
+            "isIntegrationScript": True,
+            "isLongRunning": False,
+            "mappingId": "",
+            "name": "CVE Search v2_instance_1",
+            "outgoingMapperId": "",
+            "passwordProtected": False,
+        }
+        """
+        """
+        body = {
+            "brand": "CVE Search v2",
+            "configuration": config,
+            "data": data,
+            "category": "Vulnerability Management",
+            "name": "CVE Search v2_instance_1",
+            "version": 0,
+            "enabled": "true",
+            "id": "119a340f-a35c-45c5-8d77-24b5e40ddb17"
+
+        }
+        """
+        with open("sample.json", "r") as f:
+            script = json.loads(f.read())
+        print(script)
+        c = {
+            "sortValues": None,
+            "display": "ipinfo",
+            "canGetSamples": True,
+            "itemVersion": "1.0.1",
+            "brand": "",
+            "modified": "2021-01-22T14:15:02.185218921Z",
+            "shouldCommit": False,
+            "hidden": False,
+            "fromServerVersion": "",
+            "propagationLabels": [],
+            "name": "ipinfo",
+            "vcShouldKeepItemLegacyProdMachine": False,
+            "system": True,
+            "commitMessage": "",
+            "vcShouldIgnore": False,
+            "packPropagationLabels": ["all"],
+            "packID": "ipinfo",
+            "instances": [],
+            "configuration": yml["configuration"],
+            "version": 1,
+            "icon": "",
+            "toServerVersion": "",
+            "id": "ipinfo",
+            "image": "",
+            "description": "Use the ipinfo.io API to get data about an IP address",
+            "category": "Data Enrichment & Threat Intelligence",
+            "prevName": "ipinfo",
+            "integrationScript": script
+        }
+        body = {
+            "name": "ipinfo_instance_1",
+            "id": "",
+            "engine": "",
+            "engineGroup": "",
+            "defaultIgnore": False,
+            "configuration": c,
+            "enabled": True,
+            "propagationLabels": ["all"],
+            "data": data,
+            "brand": "ipinfo",
+            "canSample": True,
+            "category": "Data Enrichment & Threat Intelligence",
+            "version": 0,
+            "isIntegrationScript":True,
+            "isLongRunning": False,
+            "passwordProtected": False,
+            "mappingId": "",
+            "incomingMapperId": "",
+            "outgoingMapperId": ""
+
+        }
+        print(body)
+        with open("body.json", "w+") as f:
+            f.write(str(body))
+        headers = {
+            "content-type": "application/json",
+            "accept": "application/json",
+            "Authorization": "3654CFBFEB43E4BB8302A74467C848B1"
+        }
+        res = requests.put("https://44.237.254.46:443/settings/integration", data=json.dumps(body), headers=headers, verify=False)
+        print(res.text)
 
     def do_run(self, args):
         """

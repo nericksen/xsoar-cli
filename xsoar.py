@@ -25,7 +25,7 @@ class XSOARShell(Cmd):
         """
         print("The following Packs are available.  The pack shorthand is used when invoking 'run' command")
         print("\n")
-        print("<Pack Name> [<pack shorthand>] (<state>)") 
+        print("[<state>] <Pack Name> [<pack shorthand>]") 
         print("\n")
         try:
             with open('config.json', 'r') as f:
@@ -34,9 +34,9 @@ class XSOARShell(Cmd):
             CONFIG = {}
         for pack in AVAILABLE_PACKS:
             if pack.lower() in CONFIG:
-                print(f"{pack} [{pack.lower()}] (Enabled)")
+                print(f"[X] {pack} [{pack.lower()}]")
             else:
-                print(f"{pack} [{pack.lower()}]")
+                print(f"[ ] {pack} [{pack.lower()}]")
     def do_docs(self, args):
         """
         Prints the docs page for a given command or Pack
@@ -179,11 +179,14 @@ class XSOARShell(Cmd):
             mock_param_code = "def params():\n"
             mock_param_code += f"    return {params}\n"    
 
-
+            #TODO make it optional to save parameters for more security
+            # else they will be in plain text, which is ok using credendtial vault
             config = {
                 "config": integration_config_path,
                 "code": integration_code_path,
                 "path": integration_path,
+                "params": params,
+                "version": "",
                 "image_name": f"{config_key}-xsoar"
             }
 
@@ -216,7 +219,17 @@ class XSOARShell(Cmd):
         else:
             print("Already configured")
 
-    def do_commit(self, args):
+    def do_save(self, args):
+        """
+        Save the integration configuration
+
+        Run this command to enter and save the parameters required to 
+        run an integration.
+        Parameters will be prompted for.
+
+        Example:
+          XSOAR:> save
+        """
         with open('config.json', 'r') as f:
             CONFIG = json.loads(f.read())
         #pack_config = CONFIG['ipinfo']
@@ -238,7 +251,11 @@ class XSOARShell(Cmd):
         data = []
         for item in yml["configuration"]:
             tmp = item
-            tmp["value"] = input(f"value for {item}: ")
+            prompt = f"Value for {item['name']} " 
+            if "defaultvalue" in item:
+                prompt += f"(default: {item['defaultvalue']}) "
+            prompt += ": "
+            tmp["value"] = input(prompt)
             if tmp["name"] == "proxy":
                 tmp["defaultValue"] = "False"
                 tmp["value"] = "False"
@@ -315,12 +332,25 @@ class XSOARShell(Cmd):
 
         #use "true" when prompted to trust any cert
 
+        with open("saved/ipinfo.json","w") as f:
+            f.write(json.dumps(body))
 
 
 
 
 
+    def do_load(self,args):
+        """
+        Load the integration configuration
 
+        Run this command to initialize an integration on an xsoar instance
+        with  the parameters saved using the 'save' command
+
+        Example:
+          XSOAR:> load
+        """
+        with open("saved/ipinfo.json", "r") as f:
+            body = json.loads(f.read())
         #print(body)
         #with open("body.json", "w+") as f:
         #    f.write(json.dumps(body))

@@ -33,6 +33,17 @@ Install docker engine according to  [here](https://docs.docker.com/get-docker/).
 
 API keys to 3rd party systems you already own or are open source.
 
+#### Add Ons
+You can connect to an XSOAR instance to load pack configurations and perform additional testing.
+Connections are made by setting the following environment variables
+
+```
+export XSOAR_API_KEY=<api_key>
+export XSOAR_URL=https://<xsoar_url_or_ip>
+```
+
+You can then run the `load` command.
+
 ## Documentation
 The main XSOAR content documentation can be located at: https://xsoar.pan.dev/
 

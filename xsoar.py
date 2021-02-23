@@ -10,6 +10,8 @@ from cmd import Cmd
 
 AVAILABLE_PACKS = ['Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence', 'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 'JsonWhoIs', 'Mattermost', 'MicrosoftTeams', "MongoDB", "OSQuery", "Pwned", "SMB", "Shodan", "Slack", "SplunkPy", "VirusTotal", "WhatIsMyBrowser", "ElasticSearch"]
 
+XSOAR_API_KEY = ""
+XSOAR_URL = ""
 
 
 class XSOARShell(Cmd):
@@ -357,10 +359,10 @@ class XSOARShell(Cmd):
         headers = {
             "content-type": "application/json",
             "accept": "application/json",
-            "Authorization": "3654CFBFEB43E4BB8302A74467C848B1"
+            "Authorization": XSOAR_API_KEY
         }
         print(body)
-        res = requests.put("https://44.237.254.46:443/settings/integration", json=body, headers=headers, verify=False)
+        res = requests.put(f"{XSOAR_URL}/settings/integration", json=body, headers=headers, verify=False)
         print(res.text)
 
     def do_run(self, args):

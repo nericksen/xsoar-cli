@@ -218,6 +218,7 @@ You can set `insecure: True` when prompted to not validate the SSL cert with htt
 * AWS Packs
 * GCP Packs
 * Azure Packs
+* Cortex Data Lake
 
 #### Packs Configurations
 Pack configurations are stored in the config.json that is created in the root of this repo directory.
@@ -231,4 +232,8 @@ The file path within the docker container for execution is hardcoded to be `/usr
 #### Future Improvements
 [] Place generated demistomock, commonserverpython, commonserveruserpython into tmp directory not tracked by version control.
 
+#### Pro Tips
+In vim you can format your JSON with 
+
+`:%!python -m json.tool`
 

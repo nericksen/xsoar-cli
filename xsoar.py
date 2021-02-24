@@ -234,63 +234,105 @@ class XSOARShell(Cmd):
         """
         with open('config.json', 'r') as f:
             CONFIG = json.loads(f.read())
-        #pack_config = CONFIG['ipinfo']
-        pack_config = "content/Packs/ipinfo/Integrations/integration-Ipinfo.yml"
-        #print(pack_config)
+        print("Enabled Packs")
+        if CONFIG.items():
+            for k,v in CONFIG.items():
+                print(f"#### {k} ####")
+                print(f"{json.dumps(v['params'], indent=1)}")
+        # prompt for which enabled pack to save
+            print("\n") 
+            print("Hint: The pack name is enclosed in ## packname ## above")
+            pack = input("Which enabled pack should be saved (Enter pack name)?")
+            
+            pack_config = CONFIG[pack]["config"]
          
-        with open(pack_config, "r") as stream:
-            try:
-                yml = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-        print("\n\n")
-        brand = yml["name"]
-        config = yml
-        #print(config)
-        config["integrationScript"] = yml["script"]
+            #pack_config = "content/Packs/ipinfo/Integrations/integration-Ipinfo.yml"
+            #print(pack_config)
+             
+            with open(pack_config, "r") as stream:
+                try:
+                    yml = yaml.safe_load(stream)
+                except yaml.YAMLError as exc:
+                    print(exc)
+            print("\n\n")
+            brand = yml["name"]
+            config = yml
+            #print(config)
+            config["integrationScript"] = yml["script"]
         #del config["script"]
         #config["id"] = "CVE Search v2"
+
+        else:
+            prompt = True
+
+        # This loop below prompts user to enter parameters again
+        # If it is already enabled and parameters are saved in CONFIG
+        # then it should be possible to save already enabled wo reentering details
+        # but if not enabled run the code below
+        # also refactor into 1 for loop
+        # need to refactor enable and load commands first
         data = []
-        for item in yml["configuration"]:
-            tmp = item
-            prompt = f"Value for {item['name']} " 
-            if "defaultvalue" in item:
-                prompt += f"(default: {item['defaultvalue']}) "
-            prompt += ": "
-            tmp["value"] = input(prompt)
-            if tmp["name"] == "proxy":
-                tmp["defaultValue"] = "False"
-                tmp["value"] = "False"
-                print(tmp)
-                del tmp["defaultvalue"]
-            data.append(tmp)
+        ENABLED = False
+        if ENABLED:
+            for item in yml["configuration"]:
+                tmp = item
+                prompt = f"Value for {item['name']} " 
+                if "defaultvalue" in item:
+                    prompt += f"(default: {item['defaultvalue']}) "
+                prompt += ": "
+                tmp["value"] = input(prompt)
+                if tmp["name"] == "proxy":
+                    tmp["defaultValue"] = "False"
+                    tmp["value"] = "False"
+                    print(tmp)
+                    del tmp["defaultvalue"]
+                data.append(tmp)
+        else:
+            pack_params = CONFIG[pack]["params"]
+            if not pack_params:
+                return
+            for item in yml["configuration"]:
+                tmp = item
+                if item["name"] in pack_params:
+                    tmp["value"] = pack_params[item["name"]]
+                elif tmp["required"] == True and "defaultvalue" in tmp:
+                    tmp["value"] = tmp["defaultvalue"]
+                else:
+                    continue
+                if tmp["name"] == "proxy":
+                    tmp["defaultValue"] = "False"
+                    tmp["value"] = "False"
+                    print(tmp)
+                    del tmp["defaultvalue"]
+                data.append(tmp)
+                
         print("\n\n")
         print(data)
-        instance_name = "ipinfo_instance_1"
+
+
+
+        #instance_name = "ipinfo_instance_1"
         body = {
-            "name": instance_name, 
+            "name": "placeholder", 
             "id": "",
             "engine": "",
             "engineGroup": "",
             "defaultIgnore": False,
             "configuration": {
                 "sortValues": None,
-                "display": "ipinfo",
+                "display": yml["display"],
                 "canGetSamples": True,
-                "itemVersion": "1.0.1",
                 "brand": "",
-                "modified": "2021-01-22T14:15:02.185218921Z",
                 "shouldCommit": False,
                 "hidden": False,
                 "fromServerVersion": "",
                 "propagationLabels": [],
-                "name": "ipinfo",
+                "name": yml["name"],
                 "vcShouldKeepItemLegacyProdMachine": False,
                 "system": True,
                 "commitMessage": "",
                 "vcShouldIgnore": False,
                 "packPropagationLabels": ["all"],
-                "packID": "ipinfo",
                 "configuration": data,
                 "version": 1,
                 "icon": "",
@@ -299,7 +341,6 @@ class XSOARShell(Cmd):
                 "image": "",
                 "description": yml["description"],
                 "category": yml["category"],
-                "prevName": "ipinfo",
                 "integrationScript": {
                     "isRemoteSyncOut": False,
                     "longRunning": False,
@@ -334,7 +375,7 @@ class XSOARShell(Cmd):
 
         #use "true" when prompted to trust any cert
 
-        with open("saved/ipinfo.json","w") as f:
+        with open(f"saved/{yml['name'].replace(' ', '_')}.json","w+") as f:
             f.write(json.dumps(body))
 
 
@@ -351,8 +392,21 @@ class XSOARShell(Cmd):
         Example:
           XSOAR:> load
         """
-        with open("saved/ipinfo.json", "r") as f:
+        # Print all saved configs
+        saved_configs = os.listdir("saved")
+        if len(saved_configs) == 0:
+            return "No saved configs. Run save command first"
+        print(saved_configs)
+        for index, config in enumerate(saved_configs):
+            print(f"{[index]} {config}")
+        selected_index = input("Which config should be loaded (input number from above)? ")
+        selected_config_file = saved_configs[int(selected_index)]
+        if not XSOAR_API_KEY:
+            return "No API key configured for xsoar instance"
+        with open(f"saved/{selected_config_file}", "r") as f:
             body = json.loads(f.read())
+        instance_name = input("Enter the instance name to create: ")
+        body["name"] = instance_name
         #print(body)
         #with open("body.json", "w+") as f:
         #    f.write(json.dumps(body))

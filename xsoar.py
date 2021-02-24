@@ -232,8 +232,14 @@ class XSOARShell(Cmd):
         Example:
           XSOAR:> save
         """
-        with open('config.json', 'r') as f:
-            CONFIG = json.loads(f.read())
+        try:
+            with open('config.json', 'r') as f:
+                CONFIG = json.loads(f.read())
+        except Exception as e:
+            print(e)
+            print("No config.json detected, You may need to run 'enable' command first")
+            return
+
         print("Enabled Packs")
         if CONFIG.items():
             for k,v in CONFIG.items():
@@ -306,9 +312,8 @@ class XSOARShell(Cmd):
                     del tmp["defaultvalue"]
                 data.append(tmp)
                 
-        print("\n\n")
-        print(data)
-
+        #print("\n\n")
+        #print(data)
 
 
         #instance_name = "ipinfo_instance_1"
@@ -372,13 +377,15 @@ class XSOARShell(Cmd):
             "incomingMapperId": "",
             "outgoingMapperId": ""
         }
-
+        # Create saved directory if it doesn't exist
+        if not os.path.exists('saved'):
+            os.makedirs('saved')
         #use "true" when prompted to trust any cert
-
-        with open(f"saved/{yml['name'].replace(' ', '_')}.json","w+") as f:
+        filename = f"{yml['name'].replace(' ', '_')}.json"
+        with open(f"saved/{filename}","w+") as f:
             f.write(json.dumps(body))
-
-
+        print("...")
+        print(f"Pack saved to {filename}!")
 
 
 
@@ -415,9 +422,12 @@ class XSOARShell(Cmd):
             "accept": "application/json",
             "Authorization": XSOAR_API_KEY
         }
-        print(body)
         res = requests.put(f"{XSOAR_URL}/settings/integration", json=body, headers=headers, verify=False)
-        print(res.text)
+
+        if res.ok:
+            print(f"Successfully uploaded {selected_config_file} to {XSOAR_URL}")
+        else:
+            print("Error uploading...")
 
     def do_run(self, args):
         """

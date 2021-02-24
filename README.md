@@ -6,10 +6,11 @@ These automation scripts and integrations, combined with the XSOAR CLI make util
 
 
 #### Prerequisites
-Install python 3.7 or 3.8. 
-Clone this repo with `git clone https://github.com/nericksen/xsoar-cli.git`.
-Change directory into the CLI repo `cd xsoar-cli`.
-Clone the content repo into the same directory `git clone https://github.com/demisto/content.git`.
+1. Install python 3.7 or 3.8. 
+2. Clone this repo with `git clone https://github.com/nericksen/xsoar-cli.git`.
+3. Change directory into the CLI repo `cd xsoar-cli`.
+4. Clone the content repo into the same directory `git clone https://github.com/demisto/content.git`.
+
 
 Recomended to use `pyenv` or another Python versioning tool.
 
@@ -20,6 +21,7 @@ For example
 `pip install virtualenv`
 
 Create a virtual env with `virtualenv venv`.
+
 Activate the virtualenv with `source ./venv/bin/activate`
 
 Clone the Demisto content repo into the same directory as the XSOAR CLI.
@@ -33,61 +35,61 @@ Install docker engine according to  [here](https://docs.docker.com/get-docker/).
 
 API keys to 3rd party systems you already own or are open source.
 
-#### Add Ons
-You can connect to an XSOAR instance to load pack configurations and perform additional testing.
-Connections are made by setting the following environment variables
-
-```
-export XSOAR_API_KEY=<api_key>
-export XSOAR_URL=https://<xsoar_url_or_ip>
-```
-
-You can then run the `load` command.
-
 ## Documentation
-The main XSOAR content documentation can be located at: https://xsoar.pan.dev/
+For writing code and contributing, the main XSOAR content documentation can be located at: https://xsoar.pan.dev/
 
 Once the dependencies are installed you can run the XSOAR CLI from the root directory of this repository with
-`python3 xsoar.py`
+
+```
+python3 xsoar.py
+```
 
 You will then be presented with the XSOAR prompt where you can enter CLI commands
 
-Start by viewing the currently available Packs by running `packs` or type `help`.
+### Basic Usage
+Packs are groups of content around various use cases and 3rd party tools.
+Integrations are the fundamental connectors to these 3rd party services
+and facilitate the authentication and CRUD operations with security tools' APIs.
+Integrations are included in content packs and are the current focus of the XSOAR CLI.
+
+Start by viewing the currently available Packs by running `packs` or type `help` to view all available commands.
 
 ```
 XSOAR:> packs
 The following Packs are available.  The pack shorthand is used when invoking 'run' command
 
 
-<Pack Name> [<pack shorthand>] (<state>)
+[<state>] <Pack Name> [<pack shorthand>]
 
 
-Nmap [nmap]
-CVESearch [cvesearch]
-Whois [whois]
-AbuseDB [abusedb]
-Alexa [alexa]
-Confluence [confluence]
-Github [github]
-Gmail [gmail]
-HashiCorp-Vault [hashicorp-vault]
-Jira [jira]
-JoeSecurity [joesecurity]
-JsonWhoIs [jsonwhois]
-Mattermost [mattermost]
-MicrosoftTeams [microsoftteams]
-MongoDB [mongodb]
-OSQuery [osquery]
-Pwned [pwned]
-SMB [smb]
-Shodan [shodan]
-Slack [slack]
-SplunkPy [splunkpy]
-VirusTotal [virustotal]
-WhatIsMyBrowser [whatismybrowser]
-ElasticSearch [elasticsearch]
+[ ] Nmap [nmap]
+[ ] CVESearch [cvesearch]
+[ ] Whois [whois]
+[ ] AbuseDB [abusedb]
+[ ] Alexa [alexa]
+[ ] Confluence [confluence]
+[ ] Github [github]
+[ ] Gmail [gmail]
+[ ] HashiCorp-Vault [hashicorp-vault]
+[ ] Jira [jira]
+[ ] JoeSecurity [joesecurity]
+[ ] JsonWhoIs [jsonwhois]
+[ ] Mattermost [mattermost]
+[ ] MicrosoftTeams [microsoftteams]
+[ ] MongoDB [mongodb]
+[ ] OSQuery [osquery]
+[ ] Pwned [pwned]
+[ ] SMB [smb]
+[ ] Shodan [shodan]
+[ ] Slack [slack]
+[ ] SplunkPy [splunkpy]
+[ ] VirusTotal [virustotal]
+[ ] WhatIsMyBrowser [whatismybrowser]
+[ ] ElasticSearch [elasticsearch]
+
 ```
-Enabling a pack allows for entering the parameters needed for authenticating to the 3rd party service and can be performed with `enable <Pack Name>`.
+
+Enabling a pack allows for entering the parameters needed for authenticating to the 3rd party service and can be performed with `enable`.
 
 ```
 XSOAR:> enable
@@ -145,7 +147,8 @@ registrant:
 ```
 
 
-Listing the commands for a pack can be accomplished by using the `docs command`.
+Listing the commands for a pack can be accomplished by using the `docs` command.
+This gets the arguments from the Packs integration yaml.
 
 ```
 XSOAR:> docs whois
@@ -172,8 +175,54 @@ Arguments:
 
 ```
 
+### Saving and Loading Packs
+Once a pack has been enabled, it may be useful to store its configuration for future use.
+The configuration can be saved with the `save` command.
 
-#### Currently Tested Packs
+Note the pack must be enabled
+
+```
+XSOAR:> save
+Enabled Packs
+#### cvesearch ####
+{
+ "url": "https://cve.circl.lu/api/",
+ "insecure": "true"
+}
+
+
+Hint: The pack name is enclosed in ## packname ## above
+Which enabled pack should be saved (Enter pack name)? cvesearch
+
+...
+Pack saved to CVE_Search_v2.json!
+```
+
+The pack can then be loaded into an XSOAR instance for testing with the `load` command.
+
+You can connect to an XSOAR instance to load pack configurations and perform additional testing.
+Connections are made by setting the following environment variables
+
+```
+export XSOAR_API_KEY=<api_key>
+export XSOAR_URL=https://<xsoar_url_or_ip>
+```
+
+You can then run the `load` command.
+
+```
+XSOAR:> load
+Saved pack configurations
+[0] CVE_Search_v2.json
+
+Which config should be loaded (input number from above)? 0
+Enter the instance name to create: testing_instance
+Successfully uploaded CVE_Search_v2.json to https://0.0.0.0
+```
+
+
+
+### Currently Tested Packs
 ```
 [x] Nmap
 [x] CVESearch
@@ -212,7 +261,7 @@ if __name__ in ("__builtin__", "builtins", "__main__"):
 
 Currently the `enable` command will work to add `__main__` if it does not exist in the pack code.
 
-You can set `insecure: True` when prompted to not validate the SSL cert with http requests.
+You can set `insecure: true` when prompted to not validate the SSL cert with http requests.
 
 #### Next in line for support
 * AWS Packs
@@ -237,3 +286,8 @@ In vim you can format your JSON with
 
 `:%!python -m json.tool`
 
+
+At any point you can delete the `config.json` to remove the configured packs.
+
+At any point you can delete the items in the `saved` directory to remove saved configurations.
+Note you should be using a credential vault to store any passwords, so all the secrets are kept safe externally.

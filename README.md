@@ -223,6 +223,9 @@ Successfully uploaded CVE_Search_v2.json to https://0.0.0.0
 
 
 ### Currently Tested Packs
+The following packs have been tested by an end user.
+This is always subject to change as code changes in the content repo may break functionality of the CLI.
+
 ```
 [x] Nmap
 [x] CVESearch
@@ -280,14 +283,15 @@ The file path within the docker container for execution is hardcoded to be `/usr
 
 #### Future Improvements
 [] Place generated demistomock, commonserverpython, commonserveruserpython into tmp directory not tracked by version control.
+[] Performance testing of playbooks
+[] Deploy XSOAR instances with Terraform from the CLI !!
+[] Add ability to load integration configurations locally for CLI usage
 
 #### Pro Tips
 In vim you can format your JSON with 
 
 `:%!python -m json.tool`
 
-
-At any point you can delete the `config.json` to remove the configured packs.
 
 At any point you can delete the items in the `saved` directory to remove saved configurations.
 Note you should be using a credential vault to store any passwords, so all the secrets are kept safe externally.

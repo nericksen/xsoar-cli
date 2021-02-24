@@ -4,7 +4,7 @@ The XSOAR CLI is designed to be a universal cyber security multi tool.
 This repo leverages the Demisto content repo [demisto content](https://github.com/demisto/content) where enterprise grade automation content is being built and maintained.
 These automation scripts and integrations, combined with the XSOAR CLI make utilizing a vast array of 3rd party and open source APIs from a single CLI possible.
 
-<img src="imgs/xsoar-cli.png" />
+<img src="imgs/cli.png" />
 
 #### Prerequisites
 1. Install python 3.7 or 3.8. 

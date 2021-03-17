@@ -8,7 +8,7 @@ import subprocess
 import shutil
 from cmd import Cmd
 
-AVAILABLE_PACKS = ['Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence', 'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 'JsonWhoIs', 'Mattermost', 'MicrosoftTeams', "MongoDB", "OSQuery", "Pwned", "SMB", "Shodan", "Slack", "SplunkPy", "VirusTotal", "WhatIsMyBrowser", "ElasticSearch"]
+AVAILABLE_PACKS = ['Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence', 'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 'JsonWhoIs', 'Mattermost', 'MicrosoftTeams', "MongoDB", "OSQuery", "Pwned", "SMB", "Shodan", "Slack", "SplunkPy", "VirusTotal", "WhatIsMyBrowser", "ElasticSearch", "ServiceNow"]
 
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
 XSOAR_URL = os.environ['XSOAR_URL']
@@ -310,6 +310,10 @@ class XSOARShell(Cmd):
                     tmp["value"] = "False"
                     print(tmp)
                     del tmp["defaultvalue"]
+                if tmp["name"] == "credentials":
+                    tmp["value"] = {
+                        "credential": pack_params["credentials"]
+                    }
                 data.append(tmp)
                 
         #print("\n\n")
@@ -382,6 +386,10 @@ class XSOARShell(Cmd):
             os.makedirs('saved')
         #use "true" when prompted to trust any cert
         filename = f"{yml['name'].replace(' ', '_')}.json"
+        print(f"Default pack save name: {filename}")
+        saved_pack_name = input("Enter name for saved pack config (Enter for default): ")
+        if saved_pack_name:
+            filename = saved_pack_name
         with open(f"saved/{filename}","w+") as f:
             f.write(json.dumps(body))
         print("...")

@@ -80,11 +80,12 @@ class XSOARShell(Cmd):
             if 'description' in item:
                 print(f"Description: {item['description']}")
             print("Arguments: ")
-            for arg in item['arguments']:
-                print(f"\t{arg['name']} ", end="")
-                if 'description' in arg:
-                    print(f" - {arg['description']}")
-            print("\n")
+            if "arguments" in item:
+                for arg in item['arguments']:
+                    print(f"\t{arg['name']} ", end="")
+                    if 'description' in arg:
+                        print(f" - {arg['description']}")
+                print("\n")
 
     def do_enable(self, args):
         """
@@ -162,7 +163,18 @@ class XSOARShell(Cmd):
             #print(yml["configuration"])
             params = {}
             print("Enter integration parameters: \n")
+            LOCAL = True
             for param in yml["configuration"]:
+                # Handle credentials for local or external vault
+                if param["name"] in ["credentials", "authentication"] and LOCAL == True:
+                    identifier = input("Enter Identifier: ")
+                    password = input("Enter password: ")
+
+                    params[param["name"]] = {
+                        "identifier": identifier,
+                        "password": password
+                    }
+                    continue
                 default = param.get('defaultvalue', None)
                 if default:
                     params[param['name']] = default
@@ -314,6 +326,10 @@ class XSOARShell(Cmd):
                     tmp["value"] = {
                         "credential": pack_params["credentials"]
                     }
+                elif tmp["name"] == "authentication":
+                    tmp["value"] = {
+                        "credential": pack_params["authentication"]
+                    }
                 data.append(tmp)
                 
         #print("\n\n")
@@ -435,7 +451,7 @@ class XSOARShell(Cmd):
         if res.ok:
             print(f"Successfully uploaded {selected_config_file} to {XSOAR_URL}")
         else:
-            print("Error uploading...")
+            print(f"Error uploading...{res.text}")
 
     def do_run(self, args):
         """
@@ -452,6 +468,7 @@ class XSOARShell(Cmd):
         #command = "whois"
         dArgs = {}
         for arg in args[2:]:
+            print(arg)
             tmp = arg.split("=")
             k = tmp[0]
             v = tmp[1]

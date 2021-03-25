@@ -441,7 +441,6 @@ class XSOARShell(Cmd):
         saved_configs = os.listdir("saved")
         if len(saved_configs) == 0:
             return "No saved configs. Run save command first"
-        print(saved_configs)
         for index, config in enumerate(saved_configs):
             print(f"{[index]} {config}")
         selected_index = input("Which config should be loaded (input number from above)? ")

@@ -110,11 +110,14 @@ Hint Enter for default value (None)
 proxy_url: 
 {}
 ```
+You can specify to use the local credential vault on the xsoar instance to store sensitive data
+for integrations that support credentials. Pass the `LOCAL_VAULT=true` flag to the `enable` command. 
+This will disable running commands locally, but is more secure as the cleartext credentials are not stored locally. 
 
 If the pack does not following the standard XSOAR naming conventions it may not be located, in which case you can run `enable` command again with `SAFE_MODE=true`.
 
 ```
-XSOAR:>enable SAFE_MODE=true
+XSOAR:>enable SAFE_MODE=true LOCAL_VAULT=true
 ```
 
 Once the pack is enabled you can run its commads using the `run` command.
@@ -191,7 +194,6 @@ Enabled Packs
  "insecure": "true"
 }
 
-
 Hint: The pack name is enclosed in ## packname ## above
 Which enabled pack should be saved (Enter pack name)? cvesearch
 
@@ -247,8 +249,9 @@ This is always subject to change as code changes in the content repo may break f
 [] Pwned
 [] SMB
 [] Shodan
+[x] ServiceNow
 [] Slack
-[] SplunkPy
+[x] SplunkPy
 [] VirusTotal
 [] WhatIsMyBrowser
 [] ElasticSearch
@@ -281,6 +284,13 @@ As this file contains secrets and API keys it is strongly advised to manage its 
 #### Known Limitations
 Currently only python modules are supported.
 The file path within the docker container for execution is hardcoded to be `/usr/bin/python`.
+
+The run command cannot be passed arguments that contain an `=` sign as it will break the simplistic argument parser.
+So commands such as this will NOT work...
+
+```
+XSOAR:>run splunkpy splunk-search query="index=\* | head 1"
+```
 
 #### Future Improvements
 [] Place generated demistomock, commonserverpython, commonserveruserpython into tmp directory not tracked by version control.

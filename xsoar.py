@@ -95,14 +95,24 @@ class XSOARShell(Cmd):
         run an integration.
         Parameters will be prompted for.
 
-        SAFE_MODE=true can be passed to require typing the file names
+        SAFE_MODE=true (default = False) 
+          can be passed to require typing the file names
           for the config and code locations in case non standard 
           naming conventions are used.
 
+        LOCAL_VAULT=true (default = False) 
+          prompts the user to enter the credentials name
+          as it is stored in the xsoar instances credential vault. 
+          Enabling this setting disables the ability to run commands locally
+          for development and testing as the credentials are only stored on the 
+          XSOAR instances local credential vault.
+
         Example:
           XSOAR:> enable
+          XSOAR:> enable SAFE_MODE=true LOCAL_VAULT=true
         """
         SAFE_MODE = False
+        LOCAL_VAULT = False
         if args:
             args = args.split(" ")
             command = args[0]
@@ -120,6 +130,9 @@ class XSOARShell(Cmd):
                 dArgs[k] = v
             if 'SAFE_MODE' in dArgs and dArgs['SAFE_MODE'] == 'true':
                 SAFE_MODE = True
+            if 'LOCAL_VAULT' in dArgs and dArgs['LOCAL_VAULT'] == 'true':
+                LOCAL_VAULT = True
+                print("WARNING!! Will not be able to run scripts locally. Pack manager mode only")
         print("Enable a pack by entering its <Pack Name> listed by 'packs' command")
         pack = input("Which Pack should be enabled? ")
         config_key = pack.lower()
@@ -163,16 +176,21 @@ class XSOARShell(Cmd):
             #print(yml["configuration"])
             params = {}
             print("Enter integration parameters: \n")
-            LOCAL = True
             for param in yml["configuration"]:
                 # Handle credentials for local or external vault
-                if param["name"] in ["credentials", "authentication"] and LOCAL == True:
+                if param["name"] in ["credentials", "authentication"] and LOCAL_VAULT == False:
                     identifier = input("Enter Identifier: ")
                     password = input("Enter password: ")
 
                     params[param["name"]] = {
                         "identifier": identifier,
                         "password": password
+                    }
+                    continue
+                elif param["name"] in ["credentials", "authentication"] and LOCAL_VAULT == True:
+                    credential = input("Enter credential vault name: ")
+                    params[param["name"]] = {
+                        "credential": credential 
                     }
                     continue
                 default = param.get('defaultvalue', None)
@@ -323,13 +341,9 @@ class XSOARShell(Cmd):
                     print(tmp)
                     del tmp["defaultvalue"]
                 if tmp["name"] == "credentials":
-                    tmp["value"] = {
-                        "credential": pack_params["credentials"]
-                    }
+                    tmp["value"] = pack_params["credentials"]
                 elif tmp["name"] == "authentication":
-                    tmp["value"] = {
-                        "credential": pack_params["authentication"]
-                    }
+                    tmp["value"] = pack_params["authentication"]
                 data.append(tmp)
                 
         #print("\n\n")

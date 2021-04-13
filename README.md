@@ -240,6 +240,9 @@ Steps
 
 Different names can be given to the saved configuration files located in the `saved` directory which is not tracked by version control, to denote credentials for development and production environments.
 
+##### Example Saved Configurations
+Example of `config.json` and `saved` pack configs can be found in the `examples` directory of this project.
+
 
 ### Currently Tested Packs
 The following packs have been tested by an end user.

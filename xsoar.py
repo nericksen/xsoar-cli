@@ -8,7 +8,17 @@ import subprocess
 import shutil
 from cmd import Cmd
 
-AVAILABLE_PACKS = ['Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence', 'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 'JsonWhoIs', 'Mattermost', 'MicrosoftTeams', "MongoDB", "OSQuery", "Pwned", "SMB", "Shodan", "Slack", "SplunkPy", "VirusTotal", "WhatIsMyBrowser", "ElasticSearch", "ServiceNow"]
+AVAILABLE_PACKS = [
+                    'Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence',
+                    'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 
+                    'JsonWhoIs', 'Mattermost', 'MicrosoftTeams', "MongoDB", "OSQuery", 
+                    "Pwned", "SMB", "Shodan", "Slack", "SplunkPy", "VirusTotal",
+                    "WhatIsMyBrowser", "ElasticSearch", "ServiceNow", "FeedFeodoTracker",
+                    "ipinfo", "FeedMitreAttackv2", "Whois", "ExportIndicators", "FeedPlainText",
+                    "FeedCSV", "FeedJSON", "FeedTalos", "FeedMitreAttackv2", "FeedTorExitAddresses",
+                    "FeedSpamhaus", "FeedCloudflare", "FeedOffice365", "FeedAWS", "FeedAzure",
+                    "FeedFeodoTracker", "FeedUnit42v2", "AutoFocus", "ExpanseV2"
+                  ]
 
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
 XSOAR_URL = os.environ['XSOAR_URL']
@@ -194,17 +204,24 @@ class XSOARShell(Cmd):
                     }
                     continue
                 default = param.get('defaultvalue', None)
+                options = ''
+
                 if default:
                     params[param['name']] = default
+                #if 'options' in param:
+                #    options = param['options']
                 if 'description' in param:
                     description = param['description']
                 else:
                     description = "No description available"
                 print(f"{description}\n")
+                print(f"{options}\n")
                 print(f"Hint Enter for default value ({default})\n")
                 tmp_input = input(f"{param['name']}: ")
                 if tmp_input:
                     params[param['name']] = tmp_input
+                    if options:
+                        params['selectedValues'] = tmp_input.split(",")
                       
             print(params)
             
@@ -344,6 +361,9 @@ class XSOARShell(Cmd):
                     tmp["value"] = pack_params["credentials"]
                 elif tmp["name"] == "authentication":
                     tmp["value"] = pack_params["authentication"]
+
+                if tmp["type"] == 16:
+                    tmp["value"] = tmp["value"].split(",")
                 data.append(tmp)
                 
         #print("\n\n")
@@ -451,6 +471,7 @@ class XSOARShell(Cmd):
             body = json.loads(f.read())
         instance_name = input("Enter the instance name to create: ")
         body["name"] = instance_name
+        
         #print(body)
         #with open("body.json", "w+") as f:
         #    f.write(json.dumps(body))

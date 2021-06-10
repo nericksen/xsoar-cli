@@ -2,7 +2,7 @@ import os
 import json
 import requests
 
-def load_config(args, XSOAR_API_KEY, XSOAR_URL):
+def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None):
     """
     Load the integration configuration
 
@@ -13,23 +13,28 @@ def load_config(args, XSOAR_API_KEY, XSOAR_URL):
       XSOAR:> load
     """
     # Print all saved configs
-    saved_configs = os.listdir("saved")
+    saved_configs = os.listdir(config_dir)
     if len(saved_configs) == 0:
         return "No saved configs. Run save command first"
     for index, config in enumerate(saved_configs):
         print(f"{[index]} {config}")
-    selected_index = input("Which config should be loaded (input number from above)? ")
-    selected_config_file = saved_configs[int(selected_index)]
-    if not XSOAR_API_KEY:
-        return "No API key configured for xsoar instance"
-    with open(f"saved/{selected_config_file}", "r") as f:
+    if prompt:
+        selected_index = input("Which config should be loaded (input number from above)? ")
+        selected_config_file = saved_configs[int(selected_index)]
+        instance_name = input("Enter the instance name to create: ")
+    else:
+        selected_config_file = config_file
+        instance_name = config_file.split(".json")[0]
+    with open(f"{config_dir}/{selected_config_file}", "r") as f:
         body = json.loads(f.read())
-    instance_name = input("Enter the instance name to create: ")
+    
     body["name"] = instance_name
     
     #print(body)
     #with open("body.json", "w+") as f:
     #    f.write(json.dumps(body))
+    if not XSOAR_API_KEY:
+        return "No API key configured for xsoar instance"
     headers = {
         "content-type": "application/json",
         "accept": "application/json",

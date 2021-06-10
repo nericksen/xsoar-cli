@@ -244,6 +244,10 @@ Different names can be given to the saved configuration files located in the `sa
 Example of pack configs that can be used with the `load` command can be found in the `examples` directory [here](https://github.com/nericksen/xsoar-cli-config-examples)
 An example `config.json` is also available there.
 
+The example config repository can be pulled down locally.
+It will not be tracked by rthe xsoar-cli project git repo.
+The `load_default_TIM.py` script can then be run to load up all the preconfigured 
+
 ### Currently Tested Packs
 The following packs have been tested by an end user.
 This is always subject to change as code changes in the content repo may break functionality of the CLI.

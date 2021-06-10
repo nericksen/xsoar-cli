@@ -2,8 +2,8 @@ import os
 import time
 from utilities.load_config import load_config
 
-XSOAR_API_KEY="CE4CFD77AA8927C7D9757CE9F83B31F3"
-XSOAR_URL="https://54.149.141.61"
+XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
+XSOAR_URL = os.environ['XSOAR_URL']
 
 config_dir = "example_configs"
 saved_configs = os.listdir(config_dir)

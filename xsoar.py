@@ -7,7 +7,7 @@ import json
 import subprocess
 import shutil
 from cmd import Cmd
-
+from utilities.load_config import load_config
 AVAILABLE_PACKS = [
                     'Nmap','CVESearch','Whois', 'AbuseDB', 'Alexa', 'Confluence',
                     'Github', 'Gmail', 'HashiCorp-Vault', 'Jira', 'JoeSecurity', 
@@ -457,6 +457,7 @@ class XSOARShell(Cmd):
         Example:
           XSOAR:> load
         """
+        """
         # Print all saved configs
         saved_configs = os.listdir("saved")
         if len(saved_configs) == 0:
@@ -486,7 +487,8 @@ class XSOARShell(Cmd):
             print(f"Successfully uploaded {selected_config_file} to {XSOAR_URL}")
         else:
             print(f"Error uploading...{res.text}")
-
+        """
+        load_config(args, XSOAR_API_KEY, XSOAR_URL)
     def do_run(self, args):
         """
         Run the specified command

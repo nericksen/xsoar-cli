@@ -246,7 +246,8 @@ An example `config.json` is also available there.
 
 The example config repository can be pulled down locally.
 It will not be tracked by rthe xsoar-cli project git repo.
-The `load_default_TIM.py` script can then be run to load up all the preconfigured 
+The `load_default_TIM.py` script can then be run to load up all the preconfigured integrations surronding TIM
+from the example repository.
 
 ### Currently Tested Packs
 The following packs have been tested by an end user.

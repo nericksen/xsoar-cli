@@ -5,7 +5,7 @@ from utilities.load_config import load_config
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
 XSOAR_URL = os.environ['XSOAR_URL']
 
-config_dir = "example_configs"
+config_dir = "xsoar-cli-config-examples"
 saved_configs = os.listdir(config_dir)
 
 for config in saved_configs:

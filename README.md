@@ -246,8 +246,13 @@ An example `config.json` is also available there.
 
 The example config repository can be pulled down locally.
 It will not be tracked by rthe xsoar-cli project git repo.
+
+The TIM content packs can be installed from the example configuration directory by reading the `EXAMPLES_PACK_LIST.txt` file.
+Once this file is populated the packs can be installed using `install_default_TIM_packs.py`.
 The `load_default_TIM.py` script can then be run to load up all the preconfigured integrations surronding TIM
 from the example repository.
+
+
 
 ### Currently Tested Packs
 The following packs have been tested by an end user.

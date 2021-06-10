@@ -26,6 +26,8 @@ def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config
         selected_config_file = config_file
         instance_name = config_file.split(".json")[0]
     with open(f"{config_dir}/{selected_config_file}", "r") as f:
+        print(config_dir)
+        print(selected_config_file)
         body = json.loads(f.read())
     
     body["name"] = instance_name

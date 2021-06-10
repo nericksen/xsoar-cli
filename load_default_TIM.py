@@ -1,4 +1,5 @@
 import os
+import time
 from utilities.load_config import load_config
 
 XSOAR_API_KEY="CE4CFD77AA8927C7D9757CE9F83B31F3"
@@ -13,3 +14,5 @@ for config in saved_configs:
                 prompt=False,
                 config_file=config,
                 config_dir=config_dir)
+    print("Sleeping while the first fetch happens...")
+    time.sleep(240)

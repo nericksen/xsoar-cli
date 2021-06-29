@@ -17,12 +17,14 @@ AVAILABLE_PACKS = [
                     "ipinfo", "FeedMitreAttackv2", "Whois", "ExportIndicators", "FeedPlainText",
                     "FeedCSV", "FeedJSON", "FeedTalos", "FeedMitreAttackv2", "FeedTorExitAddresses",
                     "FeedSpamhaus", "FeedCloudflare", "FeedOffice365", "FeedAWS", "FeedAzure",
-                    "FeedFeodoTracker", "FeedUnit42v2", "AutoFocus", "ExpanseV2"
+                    "FeedFeodoTracker", "FeedUnit42v2", "AutoFocus", "ExpanseV2", "AbuseDB", "MicrosoftGraphUser"
                   ]
 
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
 XSOAR_URL = os.environ['XSOAR_URL']
 
+VAULT_TOKEN = os.environ['VAULT_TOKEN']
+VAULT_URL = os.environ['VAULT_URL']
 
 class XSOARShell(Cmd):
     def __init__(self, **kwargs):
@@ -457,7 +459,19 @@ class XSOARShell(Cmd):
         Example:
           XSOAR:> load
         """
-        load_config(args, XSOAR_API_KEY, XSOAR_URL)
+        """
+        prompt = True
+        if args:
+            args = args.split(" ")
+            for arg in args:
+                k = arg.split("=")[0]
+                v = arg.split("=")[1]
+                print(f"{k}:{v}")
+                if k == "PROMPT" and v == "False":
+                    prompt = False
+                print(f"{k}:{v}")
+        """
+        load_config(args, XSOAR_API_KEY, XSOAR_URL,VAULT_TOKEN=VAULT_TOKEN,VAULT_URL=VAULT_URL)
 
     def do_run(self, args):
         """

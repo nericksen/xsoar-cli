@@ -24,3 +24,8 @@ Rapid7_Nexpose
 Tenable_io
 X509Certificate
 XForceExchange
+Base
+CommonScripts
+CommonTypes
+DemistoRESTAPI
+Phishing

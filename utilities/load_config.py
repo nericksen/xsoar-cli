@@ -2,7 +2,21 @@ import os
 import json
 import requests
 
-def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None):
+def request_vault_credentials(VAULT_TOKEN,VAULT_URL,VAULT_ENGINE,SECRET):
+    URL = f"{VAULT_URL}/v1/{VAULT_ENGINE}/data/{SECRET}"
+    HEADERS = {
+        "X-Vault-Token": VAULT_TOKEN
+    }
+    
+    params = {
+        "version": 2
+    }
+    
+    res = requests.get(URL, headers=HEADERS, verify=False)
+    
+    return res.json()
+
+def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None, HASHIVAULT=True,VAULT_TOKEN=None,VAULT_URL=None):
     """
     Load the integration configuration
 
@@ -32,6 +46,33 @@ def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config
     
     body["name"] = instance_name
     
+    # check to make request for hashivault creds
+    #TODO make this a seperate function or reduce the need to call the
+    # vault api twice to update the config
+    HASHIVAULT = True
+    if HASHIVAULT:
+        data = body["configuration"]["configuration"]
+        for item in data:
+            if "value" in item and "HASHIVAULT" in item["value"]:
+                # if the vaule is stored as HASHIVAULT.engine.secret.KEY
+                # the secret can be requested and passed
+                vault_entry = item["value"].split(".")
+                secret_engine = vault_entry[1]
+                secret_name = vault_entry[2]
+                secret_key = vault_entry[3]
+                item["value"] = request_vault_credentials(VAULT_TOKEN,VAULT_URL,secret_engine,secret_name)["data"]["data"][secret_key]
+        data = body["data"]
+        for item in data:
+            if "value" in item and "HASHIVAULT" in item["value"]:
+                # if the vaule is stored as HASHIVAULT.engine.secret.KEY
+                # the secret can be requested and passed
+                vault_entry = item["value"].split(".")
+                secret_engine = vault_entry[1]
+                secret_name = vault_entry[2]
+                secret_key = vault_entry[3]
+                print(f"Requesting from Vault: {item['value']}")
+                item["value"] = request_vault_credentials(VAULT_TOKEN,VAULT_URL,secret_engine,secret_name)["data"]["data"][secret_key]
+
     #print(body)
     #with open("body.json", "w+") as f:
     #    f.write(json.dumps(body))

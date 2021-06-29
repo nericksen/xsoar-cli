@@ -252,7 +252,20 @@ Once this file is populated the packs can be installed using `install_default_TI
 The `load_default_TIM.py` script can then be run to load up all the preconfigured integrations surronding TIM
 from the example repository.
 
+#### External Credential Vault (HashiVault)
+It is now possible to setup a HashiVault instance for dynamically loading credentials during the xsoar CLI `load` command.
+Allow for connecting to the HashiVault instance by adding the following environment variables to the `.bash_profile`
 
+```
+export VAULT_TOKEN="blahblahblahblahblah"
+export VAULT_URL="https://<hashivault-ip>:8200"
+```
+
+Now when enabling integrations that require credentials you can save them locally in the `config.json` as a reference to there location in HashiVault.
+
+The format should be `HASHIVAULT.<secret_engine_name>.<secret_name>.<secret_json_key>`
+
+For example `HASHIVAULT.kv.graphuser.ID` can be used to reference the oauth ID for the Graph user integration. When the configuration is saved it will contain the reference to the creds in hashivault as well. The secret will be requested from the Vault and popultated only in the API call to post the XSOAR integration settings.
 
 ### Currently Tested Packs
 The following packs have been tested by an end user.

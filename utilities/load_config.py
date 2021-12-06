@@ -16,7 +16,7 @@ def request_vault_credentials(VAULT_TOKEN,VAULT_URL,VAULT_ENGINE,SECRET):
     
     return res.json()
 
-def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None, HASHIVAULT=True,VAULT_TOKEN=None,VAULT_URL=None):
+def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None, HASHIVAULT=False,VAULT_TOKEN=None,VAULT_URL=None):
     """
     Load the integration configuration
 
@@ -49,7 +49,7 @@ def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config
     # check to make request for hashivault creds
     #TODO make this a seperate function or reduce the need to call the
     # vault api twice to update the config
-    HASHIVAULT = True
+    #HASHIVAULT = True
     if HASHIVAULT:
         data = body["configuration"]["configuration"]
         for item in data:
@@ -73,7 +73,7 @@ def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config
                 print(f"Requesting from Vault: {item['value']}")
                 item["value"] = request_vault_credentials(VAULT_TOKEN,VAULT_URL,secret_engine,secret_name)["data"]["data"][secret_key]
 
-    #print(body)
+    print(body)
     #with open("body.json", "w+") as f:
     #    f.write(json.dumps(body))
     if not XSOAR_API_KEY:

@@ -17,7 +17,7 @@ AVAILABLE_PACKS = [
                     "ipinfo", "FeedMitreAttackv2", "Whois", "ExportIndicators", "FeedPlainText",
                     "FeedCSV", "FeedJSON", "FeedTalos", "FeedMitreAttackv2", "FeedTorExitAddresses",
                     "FeedSpamhaus", "FeedCloudflare", "FeedOffice365", "FeedAWS", "FeedAzure",
-                    "FeedFeodoTracker", "FeedUnit42v2", "AutoFocus", "ExpanseV2", "AbuseDB", "MicrosoftGraphUser"
+                    "FeedFeodoTracker", "FeedUnit42v2", "AutoFocus", "ExpanseV2", "AbuseDB", "MicrosoftGraphUser", "EDL"
                   ]
 
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']

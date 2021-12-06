@@ -9,7 +9,7 @@ authors = {}
 for pack in packs:
     with open(f"content/Packs/{pack}/pack_metadata.json", "r") as f:
         metadata = json.loads(f.read())
-    print(metadata)
+    #print(metadata)
     if "author" in metadata:
         pack_author_sanitized = metadata["author"].replace(" ", "").replace("(", "").replace(")", "")
     else:
@@ -27,3 +27,5 @@ for author,packs in authors.items():
         md += f"\t{pack['name']}"
         md += "\n\n"
 print(md)
+with open("PackSummaryStats.md", "w") as f:
+    f.write(md)

@@ -23,8 +23,8 @@ AVAILABLE_PACKS = [
 XSOAR_API_KEY = os.environ['XSOAR_API_KEY']
 XSOAR_URL = os.environ['XSOAR_URL']
 
-VAULT_TOKEN = os.environ['VAULT_TOKEN']
-VAULT_URL = os.environ['VAULT_URL']
+#VAULT_TOKEN = os.environ['VAULT_TOKEN']
+#VAULT_URL = os.environ['VAULT_URL']
 
 class XSOARShell(Cmd):
     def __init__(self, **kwargs):

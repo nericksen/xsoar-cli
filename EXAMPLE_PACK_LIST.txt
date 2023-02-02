@@ -1,7 +1,6 @@
 CVESearch
 Whois
 ipinfo
-ExportIndicators
 FeedPlainText
 FeedCSV
 FeedJSON

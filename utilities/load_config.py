@@ -16,7 +16,7 @@ def request_vault_credentials(VAULT_TOKEN,VAULT_URL,VAULT_ENGINE,SECRET):
     
     return res.json()
 
-def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None, HASHIVAULT=False,VAULT_TOKEN=None,VAULT_URL=None):
+def load_config(args={},XSIAM_MODE=True, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config_dir="saved", config_file=None, HASHIVAULT=False,VAULT_TOKEN=None,VAULT_URL=None):
     """
     Load the integration configuration
 
@@ -83,6 +83,9 @@ def load_config(args={}, XSOAR_API_KEY=None, XSOAR_URL=None, prompt=True, config
         "accept": "application/json",
         "Authorization": XSOAR_API_KEY
     }
+
+    if XSIAM_MODE:
+        headers["x-xdr-auth-id"] = "1"
     res = requests.put(f"{XSOAR_URL}/settings/integration", json=body, headers=headers, verify=False)
 
     if res.ok:
